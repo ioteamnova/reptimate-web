@@ -7,7 +7,6 @@ import Footer from "@/components/Footer";
 import ReactQuery from "@/components/ReactQuery";
 import Recoil from "@/components/Recoil";
 import { Mobile, PC } from "@/components/ResponsiveLayout";
-import { headers } from "next/headers";
 
 const sans = Open_Sans({ subsets: ["latin"] });
 
@@ -27,10 +26,8 @@ export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
-}) {  
-
+}) {
   return (
-    
     <html lang="en" className={sans.className}>
       <head>
         <meta
@@ -41,8 +38,8 @@ export default function RootLayout({
       <body className="flex flex-col w-full mx-auto">
         <Recoil>
           <ReactQuery>
-            <Header />          
-            <main className="grow white w-full mx-auto max-w-screen-xl ">
+            <Header />
+            <main className="grow white w-full mx-auto max-w-screen-xl">
               {children}
             </main>
             <Footer />

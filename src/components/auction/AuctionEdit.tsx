@@ -16,10 +16,6 @@ import { GetAuctionPostsView, Images } from "@/service/my/auction";
 // import VideoThumbnail from "../VideoThumbnail";
 import { useSetRecoilState } from "recoil";
 import { isLoggedInState, userAtom } from "@/recoil/user";
-import ImageSelecterEdit from "../ImageSelecterEdit";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
-import { TouchBackend } from "react-dnd-touch-backend";
 
 import Swal from "sweetalert2";
 import ImageSelecterEdit from "../ImageSelecterEdit";

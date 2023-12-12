@@ -28,7 +28,7 @@ export default function PostCard({
   
   
   return (
-    <div>
+    <div >
         <PC>
           <div className="relative">
             <Link
@@ -82,8 +82,6 @@ export default function PostCard({
                 <div style={imgStyle}>
                   <img
                     className="object-cover absolute inset-0 w-full h-full"
-                    width={183.5}
-                    height={183.5}
                     src={
                       thumbnail !== null ? thumbnail : "/img/reptimate_logo.png"
                     }
@@ -146,69 +144,37 @@ export default function PostCard({
           </Link>
         </Mobile>
         <PC>
-          <div style={{marginLeft:10}}>
-            <h3 className="text-[14px]">{title}</h3>
-            <div className="flex items-center">
-              <p className="font-semibold text-[14px] ">
-                {price.toLocaleString()}원
-              </p>
-              <p
-                className={`text-xs ml-1 text-white p-0.5 rounded font-bold text-[13px] ${
-                  gender === "수컷"
-                    ? "bg-gender-male-color"
-                    : gender === "암컷"
-                    ? "bg-gender-female-color"
-                    : "bg-gray-400"
-                }`}
-              >
-                {gender}
-              </p>
-              <p className="text-xs mx-1 text-white bg-gray-400 p-0.5 rounded font-bold text-[13px]" >
-                {size}
-              </p>
-            </div>
-            <div className="flex items-center ">
-              <p className="text-[13px] text-[#606060]">조회수</p>
-              <p className="text-[13px] text-[#606060] ml-0.5">{formatViews(view)}</p>
-              <p className="text-[13px] text-[#606060] ml-1">{formatTimeDifference(writeDate)}</p>
-                
+          <div className="mt-1 mb-6 flex flex-col">
+            <div style={{marginLeft:10}}>
+              <h3 className="text-[14px]">{title}</h3>
+              <div className="flex items-center">
+                <p className="font-semibold text-[14px]">
+                  {price.toLocaleString()}원
+                </p>
+                <p
+                  className={`text-xs ml-1 text-white p-0.5 rounded font-bold text-[13px] ${
+                    gender === "수컷"
+                      ? "bg-gender-male-color"
+                      : gender === "암컷"
+                      ? "bg-gender-female-color"
+                      : "bg-gray-400"
+                  }`}
+                >
+                  {gender}
+                </p>
+                <p className="text-xs mx-1 text-white bg-gray-400 p-0.5 rounded font-bold text-[13px]" >
+                  {size}
+                </p>
+              </div>
+              <div className="flex items-center ">
+                <p className="text-[13px] text-[#606060]">조회수</p>
+                <p className="text-[13px] text-[#606060] ml-0.5">{formatViews(view)}</p>
+                <p className="text-[13px] text-[#606060] ml-1">{formatTimeDifference(writeDate)}</p>
+              </div>
             </div>
           </div>
         </PC>
-        <Mobile>
-          <h3 className="font-bold ml-1 text-xl mx-1">{title}</h3>
-          <div className="flex items-center">
-            <p
-              className={`text-xs ml-1 text-white p-1 rounded font-bold ${
-                gender === "수컷"
-                  ? "bg-gender-male-color"
-                  : gender === "암컷"
-                  ? "bg-gender-female-color"
-                  : "bg-gray-400"
-              }`}
-            >
-              {gender}
-            </p>
-            <p className="text-xs mx-1 text-white bg-gray-400 p-1 rounded font-bold">
-              {size}
-            </p>
-          </div>
-          <p className="font-semibold ml-1">{price.toLocaleString()}원</p>
-          <div className="flex items-center mt-1 ml-1">
-            <img className="flex w-5 mr-1" src="/img/eye.png" />
-            <p className="">{view}</p>
-            <img className="flex w-4 mx-1" src="/img/clock.png" />
-            <p className="">{`${writeDate.getFullYear().toString().slice(2)}.${(
-              writeDate.getMonth() + 1
-            )
-              .toString()
-              .padStart(2, "0")}.${writeDate
-              .getDate()
-              .toString()
-              .padStart(2, "0")}`}</p>
-          </div>
-        </Mobile>
-      </div>
-
+    
+    </div>
   );
 }

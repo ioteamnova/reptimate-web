@@ -109,7 +109,6 @@ export default function AuctionPostCard({
               href={`/auction/posts/${idx}`}
           >
             <div style={{}}>
-
               {/* 대표 이미지 부분 */}
               <div className="relative h-[183.5.59px] overflow-hidden hover:border-2 hover:border-main-color rounded-md">
                 {/* 대표 이미지 쉐도우 */}

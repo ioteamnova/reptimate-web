@@ -34,13 +34,6 @@ export const userAtom = atom<User | null>({
   effects_UNSTABLE: [persistAtom],
 });
 
-export const recentSearchKeywordsAtom = atom<string[]>({
-  key: "recentSearchKeywords",
-  default: [],
-  effects_UNSTABLE: [persistAtom],
-});
-
-
 export const isLoggedInState = atom({
   key: "isLoggedInState",
   default: false, // Initially, the user is not logged in
