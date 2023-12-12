@@ -320,6 +320,7 @@ export default function EditProfileInput() {
       });
       // console.log(data)
       router.replace("/my");
+      
     },
     onError: (err: { response: { status: number, data: {errorCode: string, message: string} } }) => {
       if (err.response.status == 401) {
