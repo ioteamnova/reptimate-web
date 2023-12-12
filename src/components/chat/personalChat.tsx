@@ -65,7 +65,7 @@ export default function PersonalChat() {
     const storedData = localStorage.getItem('recoil-persist');
     if (storedData) {
       const userData = JSON.parse(storedData);
-      if (userData.USER_DATA.accessToken) {
+      if (userData.USER_DATA && userData.USER_DATA.accessToken) {
         const extractedAccessToken = userData.USER_DATA.accessToken;
         setAccessToken(extractedAccessToken);
         //입장한 사용자의 idx지정
@@ -137,7 +137,7 @@ export default function PersonalChat() {
       const storedData = localStorage.getItem('recoil-persist');
       if (storedData) {
         const userData = JSON.parse(storedData);
-        if (userData.USER_DATA.accessToken) {
+        if (userData.USER_DATA && userData.USER_DATA.accessToken) {
           const extractedAccessToken = userData.USER_DATA.accessToken;
           getChatRoomList(extractedAccessToken);
         } else {

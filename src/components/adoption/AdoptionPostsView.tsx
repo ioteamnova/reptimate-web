@@ -16,6 +16,7 @@ import { Comment, getCommentResponse } from "@/service/comment";
 import CommentCard from "../comment/CommentCard";
 import CommentForm from "../comment/CommentForm";
 import { adoptionDelete } from "@/api/adoption/adoption";
+
 import { boardRegisterBookmark, boardDeleteBookmark } from "@/api/board/board"
 
 import { useRouter } from "next/navigation";
@@ -123,7 +124,6 @@ export default function AdoptionPostsView() {
     const handleGoBack = () => {
       window.history.back(); // Go back to the previous page using window.history
     };
-
     return (
       <button
         onClick={handleGoBack}
@@ -133,6 +133,8 @@ export default function AdoptionPostsView() {
       </button>
     );
   }
+
+
 
   const deleteMutation = useMutation({
     mutationFn: adoptionDelete,

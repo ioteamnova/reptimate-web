@@ -56,7 +56,6 @@ export default function FindPWInput() {
   const onCheckPasswordHandler = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target as any;
     setCechkPassword(value);
-
   };
 
   const mutation = useMutation({

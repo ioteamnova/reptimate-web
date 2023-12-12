@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Mobile, PC } from "./ResponsiveLayout";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import CommunityMenu from "@/components/CommunityMenu";
@@ -14,6 +14,7 @@ import {
   fcmState,
   fcmNotificationState,
   notiVisisibleState,
+  recentSearchKeywordsAtom,
 } from "@/recoil/user";
 import {
   chatRoomState,
@@ -24,8 +25,10 @@ import PersonalChat from "@/components/chat/personalChat";
 
 import { initializeApp } from "firebase/app";
 import { getMessaging, onMessage, getToken } from "firebase/messaging";
+import Search from "./search/Search";
 import AiMenu from "@/components/ai/AiMenu";
 import AuctionMenu from "@/components/auction/AuctionMenu";
+import SearchResultMenu from "./search/SearchResultMenu";
 export default function Header() {
   const login = false;
   const pathName = usePathname() || "";
@@ -46,8 +49,12 @@ export default function Header() {
   const setUser = useSetRecoilState(userAtom);
   const setCookieLoggedIn = useSetRecoilState(isLoggedInState);
 
+  const headerRef = useRef<HTMLHeadElement>(null);
+
   const [moblieView, setMoblieView] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [isSearchModalHidden, setIsSearchModalHidden] = useState(true);
+
 
   function getCookie(name: string) {
     const value = "; " + document.cookie;
@@ -125,9 +132,20 @@ export default function Header() {
     } else {
       onMessageFCM();
     }
+
+    setIsSearchModalHidden(true);
   }, [pathName]);
 
-  useEffect(() => {}, []);
+
+  useEffect(() => {
+    if(isSearchModalHidden){
+      document.body.style.overflow = 'auto';
+    }else{
+      document.body.style.overflow = 'hidden';
+    }
+
+  }, [isSearchModalHidden]);
+
   useEffect(() => {}, [receivedNewChat]);
 
   const onMessageFCM = async () => {
@@ -174,7 +192,7 @@ export default function Header() {
     const storedData = localStorage.getItem("recoil-persist");
     if (storedData) {
       const userData = JSON.parse(storedData);
-      if (userData.USER_DATA.accessToken != null) {
+      if (userData.USER_DATA && userData.USER_DATA.accessToken) {
         const accessToken = userData.USER_DATA.accessToken;
         setIsLoggedIn(true);
       }
@@ -225,6 +243,11 @@ export default function Header() {
     // window.location.reload();
   }
 
+  function showSearchModal(){
+
+    setIsSearchModalHidden(false);
+    
+  }
   const communityPathnames = [
     "/",
     "/community/market",
@@ -244,16 +267,20 @@ export default function Header() {
   }
 
   return (
-    <header className="w-full fixed top-0 bg-white z-[9999]" style={{ boxShadow: '0 1px 0 0 rgba(0, 0, 0, 0.1)' }}>
+    <header
+      className="w-full fixed top-0 bg-white z-[9999]" style={{ boxShadow: '0 1px 0 0 rgba(0, 0, 0, 0.1)' }} 
+      >
       {/* PC 화면(반응형) */}
       <PC>
-        <div className="flex justify-end pt-2 gap-2 max-w-screen-xl mx-auto" style={{ paddingRight: 40 }}>
+        {/* 검색 모달 */}
+        <Search isHidden={isSearchModalHidden} setHidden={setIsSearchModalHidden} />
+        <div className="flex justify-end pt-2 gap-2 max-w-screen-xl mx-auto" style={{paddingRight:40}}>
           {isLoggedIn ? (
             <button
               className="group hover:text-main-color"
               onClick={handleLogout}
             >
-              <p style={{ fontSize: 12, color: "#222222CC" }}>로그아웃</p>
+              <p style={{fontSize:12, color:"#222222CC"}}>로그아웃</p>
             </button>
           ) : (
             <>
@@ -298,18 +325,18 @@ export default function Header() {
               AI
             </Link>
             {isLoggedIn ?
-            <div className="flex justify-between items-center "  style={{width: 100}} >
-              <Link
-                href="/my"
-                className={`${
-                  pathName === "/my" ? "font-bold" : ""
-                } font-normal`}
-                style={{fontSize:18, color:"#222222",}}
-              >
-                MY
-              </Link>
-              <Link href="">
-                  <Image src="/img/chat.png" 
+              <div className="flex justify-between items-center " style={{ width: 100 }} >
+                <Link
+                  href="/my"
+                  className={`${pathName.startsWith("/my") ? "font-bold" : ""
+                    } font-normal`}
+                  style={{ fontSize: 18, color: "#222222", }}
+                  onClick={chattingClick}
+                >
+                  MY
+                </Link>
+                <Link href="">
+                  <Image src="/img/chat.png"
                     width={18}
                     height={18}
                     alt="chat-icon"
@@ -327,15 +354,15 @@ export default function Header() {
                    />
               </Link> 
             </div>: ""}
-            <Link href="">
-              <div className="flex w-[20px] h-5 my-0.5 relative " style={{paddingTop:4}}>
-                <img src="/img/search.png" />
+
+              <div className="flex w-[20px] h-5 my-0.5 relative hover:cursor-pointer " style={{paddingTop:4}} onClick={() => showSearchModal()}>
+                <img src="/img/search.png"/>
               </div>
-            </Link>
+
           </nav>
         </div>
-        {/* 두번째  메뉴 */}
-        <div>
+                {/* 두번째  메뉴 */}
+                <div>
           {pathName === "/" || pathName.startsWith("/community") ? <CommunityMenu /> : ""}
         </div>
         <div>
@@ -344,7 +371,9 @@ export default function Header() {
         <div>
           {pathName.startsWith("/ai") ? <AiMenu /> : ""}
         </div>
-
+        <div>
+          { pathName.startsWith("/searchresult/") ? <SearchResultMenu /> : ""}
+        </div>
         <div
           className={`${isChatVisisible
             ? "bg-white w-[450px] h-[500px] z-[9999] fixed bottom-0 border-[2px] rounded-t-[10px] border-gray-300 right-[40px] flex flex-col shadow-md"
@@ -386,38 +415,43 @@ export default function Header() {
       </PC>
       {/* 모바일 화면(반응형) */}
       <Mobile>
+
+        <Search isHidden={isSearchModalHidden} setHidden={setIsSearchModalHidden} />
         <div className="flex justify-start pt-2 pl-3 pr-3 pb-2">
           <Link href={link}>
             <div className="flex w-32 p1-0">
-              <img src="/img/main_logo2.png" />
+              <img src="/img/main_logo2.png"/>
             </div>
           </Link>
-          <nav className={`${
-                isMobile ? "" : "gap-4"
-                } flex font-bold ml-auto`}>
-            <Link href="">
-              <div
-                className="flex w-[23px] h-5 my-0.5 relative"
-                onClick={chattingClick}
-              >
-                <img src="/img/chat.png" />
-                {receivedNewChat && (
-                  <div className="absolute rounded-[50%] bg-red-600 w-[6px] h-[6px] z-[9999] top-0 right-0"></div>
-                )}
-              </div>
-            </Link>
+          <nav className={`${isMobile ? "" : "gap-4"
+            } flex font-bold ml-auto`}>
+            {isLoggedIn ?
+              <Link href="">
+                <div
+                  className="flex w-[23px] h-5 my-0.5 relative"
+                  onClick={chattingClick} >
+                  <img src="/img/chat.png" />
+                  {receivedNewChat && (
+                    <div className="absolute rounded-[50%] bg-red-600 w-[6px] h-[6px] z-[9999] top-0 right-0"></div>
+                  )}
+                </div>
+              </Link>
+              : ""}
+
             <a onClick={notiClick}>
               <div className={`${isMobile ? "hidden" : "flex gap-4 w-5 my-0.5"
                 }`}>
                 <img src="/img/notification.png" />
               </div>
             </a>
+
             <Link href="">
-              <div className={`${isMobile ? "hidden" : "flex w-5 my-0.5"
+              <div className={`${isMobile ? "hidden" : "flex w-5 my-0.5 hover:cursor-pointer"
                 }`}>
                 <img src="/img/search.png" />
               </div>
             </Link>
+
           </nav>
         </div>
         <div
